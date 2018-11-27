@@ -1,32 +1,22 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
+Created on Tue Nov 27 13:19:09 2018
 
-This is a temporary script file.
+@author: hannahsherwood
 """
 
 import random
-#import sys
-import tkinter
 # import operator
 import matplotlib
 matplotlib.use('TkAgg')
-# matplotlib.use('macosx')
+matplotlib.use('macosx')
 import matplotlib.pyplot
 import matplotlib.animation
 import agentframework
 import csv
 
-"""
-Create the GUI window
-"""
-root = tkinter.Tk()
-root.wm_title("Model")
 
-
-""" 
-read in the environment
-"""
 f = open('in.txt')
 reader = csv.reader(f,quoting=csv.QUOTE_NONNUMERIC)
 
@@ -40,18 +30,11 @@ for row in reader:
         
     environment.append(rowlist)
 
-"""
-Calculate distance between agents
-"""
 
 def distance_between(agents_row_a, agents_row_b):
     return (((agents_row_a._y - agents_row_b._y)**2) + 
         ((agents_row_a._x - agents_row_b._x)**2))**0.5
-  
-"""
-Initialise parameters
-"""
-          
+            
 num_of_agents = 10
 num_of_iterations = 100 
 neighbourhood = 20
@@ -70,23 +53,19 @@ agents = []
 #print (agents[0]._x)
 
 
-"""
-Make the agents.
-"""
+# Make the agents.
 
 for i in range(num_of_agents):
     agents.append(agentframework.Agent(environment,agents,neighbourhood))
  
-  
-# print (len(agents))
-# for i in range(num_of_agents):
+"""   
+print (len(agents))
+for i in range(num_of_agents):
 #    agents[i].hi()
     
-
-
 """
-Move the agents and make them eat and share with neighbours.
-"""
+
+# Move the agents and make them eat and share with neighbours.
     
 for j in range(num_of_iterations):
     random.shuffle(agents)
@@ -113,10 +92,7 @@ ax = fig.add_axes([0, 0, 1, 1])
 
 #ax.set_autoscale_on(False)
 
-"""
-create new agents
-"""
-
+# create new agents
 agents = []
 for i in range(num_of_agents):
     agents.append(agentframework.Agent(environment,agents,neighbourhood))
@@ -144,30 +120,19 @@ def gen_function(b = [0]):
     while (a < 10) & (carry_on) :
         yield a 
         a = a + 1 
-        
-def run():    
-    # animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=num_of_iterations)
-    animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
-    # matplotlib.pyplot.show()
-    canvas.show()
+    
+# animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=num_of_iterations)
+animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
 
-canvas = matplotlib.backends.backend_tkagg.FigureCanvasTkAgg(fig, master=root)
-canvas._tkcanvas.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+matplotlib.pyplot.show()
 
-# for a in agents:
-    #for b in agents:
-        #distance = distance_between(a, b)
-        #a.hi()
-        #b.hi()
-        #print ("distance", distance)
+"""
+for a in agents:
+    for b in agents:
+        distance = distance_between(a, b)
+        a.hi()
+        b.hi()
+        print ("distance", distance)
+"""
 
 # print (agents[0]._agents[1]._x)
-
-root = tkinter.Tk()
-menu_bar = tkinter.Menu(root)
-root.config(menu=menu_bar)
-model_menu = tkinter.Menu(menu_bar)
-menu_bar.add_cascade(label="Model", menu=model_menu)
-model_menu.add_command(label="Run model", command=run)
-
-tkinter.mainloop()
