@@ -16,24 +16,21 @@ import matplotlib.pyplot
 import matplotlib.animation
 import agentframework
 import csv
+import requests
+import bs4
 
 
-"""
-Calculate distance between agents
-"""
 
-def distance_between(agents_row_a, agents_row_b):
-    return (((agents_row_a._y - agents_row_b._y)**2) + 
-        ((agents_row_a._x - agents_row_b._x)**2))**0.5
   
 """
+
 Initialise parameters
+
 """
           
 num_of_agents = 10
-num_of_iterations = 1000
-neighbourhood = 20
-agents = []  
+num_of_iterations = 100 
+neighbourhood = 20 
 
 ## Play with creating agents
 #a = agentframework.Agent(environment,agents,neighbourhood)
@@ -48,7 +45,9 @@ agents = []
 #print (agents[0]._x)
 
 """ 
+
 read in the environment
+
 """
 f = open('in.txt')
 reader = csv.reader(f,quoting=csv.QUOTE_NONNUMERIC)
@@ -56,90 +55,87 @@ reader = csv.reader(f,quoting=csv.QUOTE_NONNUMERIC)
 environment = []
 
 for row in f:
-    parsed_line = str.split(line, ",")
+    parsed_line = str.split(row, ",")
     rowlist = []
     for value in parsed_line:
         rowlist.append(float(value))
+    
         
     environment.append(rowlist)
+   
 f.close()
 
+#matplotlib.pyplot.imshow(environment)
+#matplotlib.pyplot.show()
+
 """
-Make the agents.
+sets the frame size of the plot
 """
+
+
+
+#ax.set_autoscale_on(False)
+
+
+"""
+Reads in x and y values from the internet and creates new agents
+"""
+r = requests.get('http://www.geog.leeds.ac.uk/courses/computing/practicals/python/agent-framework/part9/data.html')
+content = r.text
+soup = bs4.BeautifulSoup(content, 'html.parser')
+td_ys = soup.find_all(attrs = {"class" : "y"})
+td_xs = soup.find_all(attrs = {"class" : "x"})
+print (td_ys)
+print (td_xs)
+
+
+# Creating the agents
+agents = []
 
 for i in range(num_of_agents):
-    agents.append(agentframework.Agent(environment,agents,neighbourhood))
- 
-  
-# print (len(agents))
-# for i in range(num_of_agents):
-#    agents[i].hi()
-    
+    y = int(td_ys[i].text)
+    x = int(td_xs[i].text)
+    agents.append(agentframework.Agent(environment,agents, neighbourhood, y, x))
 
 
-"""
-Move the agents and make them eat and share with neighbours.
-"""
-    
-for j in range(num_of_iterations):
-    random.shuffle(agents)
-    for i in range(num_of_agents):
-       agents[i].move()
-       agents[i].eat()
-       #print("store before sharing: " + str(agents[i].store))
-       agents[i].share_with_neighbours(neighbourhood)
-       #print("store after sharing: " + str(agents[i].store))
-       
-       
-
-#matplotlib.pyplot.show()
-matplotlib.pyplot.xlim(0, 300)
-matplotlib.pyplot.ylim(0, 300)
-
-
-#for i in range(num_of_agents):
-#    matplotlib.pyplot.scatter(agents[i]._x, agents[i]._y)
 
 
 fig = matplotlib.pyplot.figure(figsize=(7, 7))
 ax = fig.add_axes([0, 0, 1, 1])
 
-#ax.set_autoscale_on(False)
-
-"""
-create new agents
-"""
-
-agents = []
-for i in range(num_of_agents):
-    agents.append(agentframework.Agent(environment,agents,neighbourhood))
-
 carry_on = True 
 
-#matplotlib.pyplot.imshow(environment)
+# matplotlib.pyplot.imshow(environment)
 
+"""
+Animation function
+"""
 def update(frame_number):
     fig.clear()
     global carry_on
     
-    
-  
-    for i in range(num_of_agents):
-           agents[i].move()
-           agents[i].eat()
-           #agents[i].share_with_neighbours()
-        
-    if random.random() < 0.1:
-            carry_on = False 
-            print("stopping condition")
-    
+
+    matplotlib.pyplot.xlim(0, 300)
+    matplotlib.pyplot.ylim(0, 300)
+ 
     # update the environment plot
     matplotlib.pyplot.imshow(environment)
     
+    for i in range(num_of_agents):
+       agents[i].move()
+       agents[i].eat()
+       agents[i].share_with_neighbours(neighbourhood)
+    
+
     for i in range (num_of_agents):
-            matplotlib.pyplot.scatter(agents[i]._x, agents[i]._y)
-            #print(agents[i]._x, agents[i]._y)
+        matplotlib.pyplot.scatter(agents[i]._x, agents[i]._y)
+        
+    
+    # stopping conditon
+    if random.random() < 0.1:
+        carry_on = False 
+        print("stopping condition")
+        #print(agents[i]._x, agents[i]._y)
 
 def gen_function(b = [0]):
     a = 0
@@ -150,12 +146,13 @@ def gen_function(b = [0]):
         
 """
 Create the GUI window
+
 """
 root = tkinter.Tk()
 root.wm_title("Model")
 
 # animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=num_of_iterations)
-#animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
+# animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
 # matplotlib.pyplot.show()
     
     
@@ -185,4 +182,3 @@ tkinter.mainloop() #Waits for interactions.
         #print ("distance", distance)
 
 # print (agents[0]._agents[1]._x)
-

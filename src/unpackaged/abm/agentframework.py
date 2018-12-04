@@ -7,32 +7,45 @@ Created on Tue Nov 20 13:22:06 2018
 """
 import random
 
+# Create Agents
 class Agent():
-    def __init__(self, environment,agents, neighbourhood):
+    def __init__(self, environment, agents, neighbourhood, y = None, x = None):
         self.environment = environment
         self.agents = agents
         self.store = 0 
-        self._x = random.randint(0,99)
-        self._y = random.randint(0,99)
+        
+        if (x == None) :
+            self._x = random.randint(0,300)
+        else:
+            self._x = x 
+        
+        if (y == None) :
+            self._y = random.randint(0,300)
+        else:
+            self._y = y
+            
         self.neighbours = neighbourhood
+        
     '''
     def hi(self):
         print ("x", self._x)
         print ("y", self._y)
     '''
     
+    # Move the agents.
     def move(self):
-        # Move the agents.
+       
         if random.random() < 0.5:
-            self._x  = (self._x + 1) % 100
+            self._x  = (self._x + 1) % 300
         else:
-            self._x  = (self._x - 1) % 100
+            self._x  = (self._x - 1) % 300
                 
         if random.random() < 0.5:
-            self._y = (self._y + 1) % 100
+            self._y = (self._y + 1) % 300
         else:
-            self._y = (self._y - 1) % 100
+            self._y = (self._y - 1) % 300
 
+    # Make the agents eat 
     def eat(self): 
         if self.environment[self._y][self._x] > 10:
            self.environment[self._y][self._x] -= 10
@@ -41,18 +54,24 @@ class Agent():
             self.store += self.environment[self._y][self._x]
             self.environment[self._y][self._x] = 0
    
-    def share_with_neighbours(self, neighbours):
+   # Make agents share food stores with neighbours
+    def share_with_neighbours(self, neighbourhood):
         for agent in self.agents:
             dist = self.distance_between(agent)
-            if dist <= neighbours:
+            if dist <= neighbourhood:
                 sum = self.store + agent.store
                 ave = sum/2 
                 self.store = ave
                 agent.store = ave 
                 #print("sharing " + str(dist) + " " + str(ave))
 
+    # Calculate distance between agents 
     def distance_between(self, agent):
         return (((self._x - agent._x)**2) + ((self._y - agent._y)**2))**0.5
+   
+    
+    
+    
     
     # Loop through the agents in self.agents .
     # Calculate the distance between self and the current other agent:
