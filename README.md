@@ -1,4 +1,4 @@
-# PGIA-Practicals
+# Programming for Geographical Information Analysis: Core Skills-Practicals
 
 This repository is a portfolio of work for the Module GEOG 5990M with the School of Geography at the University of Leeds.
 
