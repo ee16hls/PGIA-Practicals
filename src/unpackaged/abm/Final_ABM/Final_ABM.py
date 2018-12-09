@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
-
-This is a temporary script file.
+Programming for Geographical Information Analysis: Core Skills 2018
+Model run script- Agent Based Model
+@author: Hannah Sherwood
 """
 
 import random
