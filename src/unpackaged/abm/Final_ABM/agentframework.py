@@ -35,11 +35,13 @@ class Agent():
     # Move the agents.
     def move(self):
        
+        # Move x
         if random.random() < 0.5:
             self._x  = (self._x + 1) % 300
         else:
             self._x  = (self._x - 1) % 300
-                
+       
+        # Move y        
         if random.random() < 0.5:
             self._y = (self._y + 1) % 300
         else:
@@ -54,6 +56,10 @@ class Agent():
             self.store += self.environment[self._y][self._x]
             self.environment[self._y][self._x] = 0
    
+    # Define Agent stores
+    def getstore(self):
+        return self.store
+    
    # Make agents share food stores with neighbours
     def share_with_neighbours(self, neighbourhood):
         for agent in self.agents:
@@ -69,20 +75,6 @@ class Agent():
     def distance_between(self, agent):
         return (((self._x - agent._x)**2) + ((self._y - agent._y)**2))**0.5
    
-    
-    
-    
-    
-    # Loop through the agents in self.agents .
-    # Calculate the distance between self and the current other agent:
-    # distance = self.distance_between(agent)
-    # distance = self.distance_between(agent)
-    
-    # If distance is less than or equal to the neighbourhood
-        # Sum self.store and agent.store .
-        # Divide sum by two to calculate average.
-        # self.store = average
-            # agent.store = average
-    # End if
-# End loop
-
+    # Gives informaion on each agents location and size of store as a string
+    def __str__(self):
+        return ('x =' + str(self._x), 'y =' + str(self._y), 'store =' + str(self.store))

@@ -4,7 +4,7 @@ Programming for Geographical Information Analysis: Core Skills 2018
 Model run script- Agent Based Model
 @author: Hannah Sherwood
 """
-
+# Imports:
 import random
 #import sys
 import tkinter
@@ -19,13 +19,9 @@ import csv
 import requests
 import bs4
 
-
-
   
 """
-
-Initialise parameters
-
+Initialise parameters in command line
 """
           
 num_of_agents = 10
@@ -45,9 +41,7 @@ neighbourhood = 20
 #print (agents[0]._x)
 
 """ 
-
-read in the environment
-
+read in the environment data
 """
 f = open('in.txt')
 reader = csv.reader(f,quoting=csv.QUOTE_NONNUMERIC)
@@ -72,10 +66,7 @@ f.close()
 sets the frame size of the plot
 """
 
-
-
 #ax.set_autoscale_on(False)
-
 
 """
 Reads in x and y values from the internet and creates new agents
@@ -125,6 +116,20 @@ def update(frame_number):
        agents[i].move()
        agents[i].eat()
        agents[i].share_with_neighbours(neighbourhood)
+       
+# Final stores written to a text file and appended each time the model is run 
+    
+    totalstore = []
+    for agent in agents:
+        totalstore.append(agent.getstore())
+        
+    f2 = open("store.txt", 'a')
+    writer = csv.writer(f2, delimiter = ',')
+    writer.writerow(totalstore)
+    f2.close()
+    
+    
+        
     
 
     for i in range (num_of_agents):
@@ -132,15 +137,18 @@ def update(frame_number):
         
     
     # stopping conditon
-    if random.random() < 0.1:
+    if random.random() < 0.01:
         carry_on = False 
         print("stopping condition")
         #print(agents[i]._x, agents[i]._y)
+        
+        
+        
 
 def gen_function(b = [0]):
     a = 0
     global carry_on
-    while (a < 10) & (carry_on) :
+    while (a < 100) & (carry_on) :
         yield a 
         a = a + 1 
         
@@ -170,6 +178,16 @@ root.config(menu=menu_bar)
 model_menu = tkinter.Menu(menu_bar)
 menu_bar.add_cascade(label="Model", menu=model_menu)
 model_menu.add_command(label="Run model", command=run)
+
+
+# Write out the environment to a text file
+
+environmentfile = open("environment.txt", 'w')
+write = csv.writer(environmentfile, delimiter= ',')
+environmentfile.write(str(environment))
+environmentfile.close()
+
+
 
 tkinter.mainloop() #Waits for interactions.
 
