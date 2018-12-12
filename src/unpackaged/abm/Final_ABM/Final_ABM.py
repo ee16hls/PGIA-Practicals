@@ -4,7 +4,19 @@ Programming for Geographical Information Analysis: Core Skills 2018
 Model run script- Agent Based Model
 @author: Hannah Sherwood
 """
-# Imports:
+"""
+This agent-based model has been created using a GUI so that when the code
+is run, an additional window will appear. To run the model, users will need to 
+click on the model window and select 'run' from a drop down menu at the top of
+tool-bar (applicable for a Mac). Once the 'run' option is selected, the model 
+will run an animation on the window, with the output (changed environment and 
+agent stores) saving to text files.
+
+"""
+
+"""
+Imports:
+"""
 import random
 #import sys
 import tkinter
@@ -19,16 +31,9 @@ import csv
 import requests
 import bs4
 
-  
-"""
-Initialise parameters in command line
-"""
-          
-num_of_agents = 10
-num_of_iterations = 100 
-neighbourhood = 20 
-
+ 
 ## Play with creating agents
+
 #a = agentframework.Agent(environment,agents,neighbourhood)
 #print (a)
 #print (a.store)
@@ -40,8 +45,9 @@ neighbourhood = 20
 #print (agents)
 #print (agents[0]._x)
 
+
 """ 
-read in the environment data
+Reads in the environment data from a text file
 """
 f = open('in.txt')
 reader = csv.reader(f,quoting=csv.QUOTE_NONNUMERIC)
@@ -59,17 +65,14 @@ for row in f:
    
 f.close()
 
+# Practice making the environment figures
 #matplotlib.pyplot.imshow(environment)
 #matplotlib.pyplot.show()
-
-"""
-sets the frame size of the plot
-"""
-
 #ax.set_autoscale_on(False)
 
+
 """
-Reads in x and y values from the internet and creates new agents
+Reads in x and y values for agents from a webpage
 """
 r = requests.get('http://www.geog.leeds.ac.uk/courses/computing/practicals/python/agent-framework/part9/data.html')
 content = r.text
@@ -79,8 +82,22 @@ td_xs = soup.find_all(attrs = {"class" : "x"})
 print (td_ys)
 print (td_xs)
 
+ 
+ 
+"""
+Defines agent parameters 
+"""
+          
+num_of_agents = 10
+num_of_iterations = 100 
+neighbourhood = 20 
 
-# Creating the agents
+
+
+"""
+Creates the agents using web data
+"""
+
 agents = []
 
 for i in range(num_of_agents):
@@ -90,16 +107,19 @@ for i in range(num_of_agents):
 
 
 
+"""
+Sets the frame size of the figure
+"""
 
 fig = matplotlib.pyplot.figure(figsize=(7, 7))
 ax = fig.add_axes([0, 0, 1, 1])
 
 carry_on = True 
 
-# matplotlib.pyplot.imshow(environment)
+
 
 """
-Animation function
+Defines the update function for the animation showing agents interaction with the environment
 """
 def update(frame_number):
     fig.clear()
@@ -109,41 +129,66 @@ def update(frame_number):
     matplotlib.pyplot.xlim(0, 300)
     matplotlib.pyplot.ylim(0, 300)
  
-    # update the environment plot
+    # updates the environment plot
     matplotlib.pyplot.imshow(environment)
-    
-    for i in range(num_of_agents):
-       agents[i].move()
-       agents[i].eat()
-       agents[i].share_with_neighbours(neighbourhood)
-       
-# Final stores written to a text file and appended each time the model is run 
-    
-    totalstore = []
-    for agent in agents:
-        totalstore.append(agent.getstore())
-        
-    f2 = open("store.txt", 'a')
-    writer = csv.writer(f2, delimiter = ',')
-    writer.writerow(totalstore)
-    f2.close()
+ 
     
     
-        
-    
+"""
+Moves the agents, gets them to eat the environment and share their food store with neighbours in a set radius
+"""
 
-    for i in range (num_of_agents):
-        matplotlib.pyplot.scatter(agents[i]._x, agents[i]._y)
+for i in range(num_of_agents):
+    agents[i].move()
+    agents[i].eat()
+    agents[i].share_with_neighbours(neighbourhood)
+    
+       
+    
+"""
+Calculates the total store of all the agents from one model run
+"""
+    
+totalstore = []
+for agent in agents:
+        totalstore.append(agent.getstore())
+   
+     
+
+"""
+Final agent stores written to a text file and appended each time the model is run
+"""
+       
+f2 = open("store.txt", 'a')
+writer = csv.writer(f2, delimiter = ',')
+writer.writerow(totalstore)
+f2.close()
+
+   
+
+"""
+Plots the agents in the environment 
+"""
+    
+for i in range (num_of_agents):
+    matplotlib.pyplot.scatter(agents[i]._x, agents[i]._y)
+
         
     
-    # stopping conditon
-    if random.random() < 0.01:
-        carry_on = False 
-        print("stopping condition")
-        #print(agents[i]._x, agents[i]._y)
-        
-        
-        
+"""
+Stopping conditon initialised
+"""
+ 
+if random.random() < 0.01:
+    carry_on = False 
+    print("stopping condition")
+    #print(agents[i]._x, agents[i]._y)
+ 
+       
+
+"""
+Defines the gen_function for the animation
+"""
 
 def gen_function(b = [0]):
     a = 0
@@ -151,9 +196,10 @@ def gen_function(b = [0]):
     while (a < 100) & (carry_on) :
         yield a 
         a = a + 1 
-        
+ 
+       
 """
-Create the GUI window
+Creates the GUI window for the model to run in
 
 """
 root = tkinter.Tk()
@@ -162,8 +208,12 @@ root.wm_title("Model")
 # animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=num_of_iterations)
 # animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
 # matplotlib.pyplot.show()
-    
-    
+  
+
+"""
+Defines the 'run' function in the model to begin animation 
+"""   
+
 def run():
     global animation 
     animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
@@ -173,6 +223,10 @@ canvas = matplotlib.backends.backend_tkagg.FigureCanvasTkAgg(fig, master=root)
 canvas._tkcanvas.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
 
+"""
+Adds a menu bar and 'run' button for users to start the model run
+"""
+
 menu_bar = tkinter.Menu(root)
 root.config(menu=menu_bar)
 model_menu = tkinter.Menu(menu_bar)
@@ -180,7 +234,9 @@ menu_bar.add_cascade(label="Model", menu=model_menu)
 model_menu.add_command(label="Run model", command=run)
 
 
-# Write out the environment to a text file
+"""
+Writes out the environment data to a text file
+"""
 
 environmentfile = open("environment.txt", 'w')
 write = csv.writer(environmentfile, delimiter= ',')
