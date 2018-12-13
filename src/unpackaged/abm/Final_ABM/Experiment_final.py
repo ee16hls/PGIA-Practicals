@@ -80,7 +80,15 @@ td_xs = soup.find_all(attrs = {"class" : "x"})
 print (td_ys)
 print (td_xs)
 
- 
+
+
+"""
+Sets the frame size of the figure
+"""
+
+fig = matplotlib.pyplot.figure(figsize=(7, 7))
+ax = fig.add_axes([0, 0, 1, 1])
+
  
 """
 Defines agent parameters 
@@ -104,23 +112,12 @@ for i in range(num_of_agents):
     agents.append(agentframework.Agent(environment,agents, neighbourhood, y, x))
 
 
-
-"""
-Sets the frame size of the figure
-"""
-
-fig = matplotlib.pyplot.figure(figsize=(7, 7))
-ax = fig.add_axes([0, 0, 1, 1])
-
-
-
 carry_on = True 
 
 
 
 """
-Defines the update function for the animation showing agents interaction with 
-the environment
+Defines the update function for the animation showing agents interaction with the environment
 """
 def update(frame_number):
     fig.clear()
@@ -135,38 +132,29 @@ def update(frame_number):
  
     
     
-    """
-    Moves the agents, gets them to eat the environment and share their food 
-    store with neighbours in a set radius
-    """
+"""
+Moves the agents, gets them to eat the environment and share their food store with neighbours in a set radius
+"""
 
-    for i in range(num_of_agents):
-        agents[i].move()
-        agents[i].eat()
-        agents[i].share_with_neighbours(neighbourhood)
+for i in range(num_of_agents):
+    agents[i].move()
+    agents[i].eat()
+    agents[i].share_with_neighbours(neighbourhood)
     
-     
-    """
-    Plots the agents in the environment 
-    """
-    
-    for i in range (num_of_agents):
-        matplotlib.pyplot.scatter(agents[i]._x, agents[i]._y)
+       
     
 """
 Calculates the total store of all the agents from one model run
 """
     
 totalstore = []
-    
 for agent in agents:
-    totalstore.append(agent.getstore())
+        totalstore.append(agent.getstore())
    
      
 
 """
-Final agent stores written to a text file and appended each time the model is 
-run
+Final agent stores written to a text file and appended each time the model is run
 """
        
 f2 = open("store.txt", 'a')
@@ -175,6 +163,15 @@ writer.writerow(totalstore)
 f2.close()
 
    
+
+"""
+Plots the agents in the environment 
+"""
+    
+for i in range (num_of_agents):
+    matplotlib.pyplot.scatter(agents[i]._x, agents[i]._y)
+
+        
     
 """
 Stopping conditon initialised
