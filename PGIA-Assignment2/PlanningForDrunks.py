@@ -5,30 +5,44 @@ Created on Thu Jan  3 12:05:06 2019
 
 @author: hannahsherwood
 """
-# Imports 
+"""
+Imports
+""" 
 import matplotlib
 import matplotlib.pyplot
+matplotlib.use('TkAgg')
+matplotlib.use('macosx')
 import csv
 import agentframework_drunks
 
-# Create lists 
+"""
+Create lists 
+"""
 environment = []
 agents = []
 stepped_environment = []
-# need a stepped environment list here ?
+# need a stepped environment list here change this to walked in env?
 
-# Define agent parameters 
+"""
+Define agent parameters 
+"""
 num_of_agents = 25
 
-# define environment frame size 
+"""
+Defines the environment frame size in the figure
+"""
 fig = matplotlib.pyplot.figure(figsize=(7, 7))
 ax = fig.add_axes([0, 0, 1, 1])
 
-# read in the environmnet text file 
+"""
+Reads in the environmnet text file 
+"""
 f = open ("TownPlan.txt")
 reader = csv.reader(f, quoting = csv.QUOTE_NONNUMERIC)
 
-# Puts environment data into rows from CSV
+"""
+Parses environment data from CSV format into rows
+"""
 for row in reader:
     rowlist = []
     for item in row:
@@ -36,8 +50,6 @@ for row in reader:
     environment.append(rowlist)
     
 # Creating code for the density map output that adds up steps on each coordinate. It uses a 300x300px size, just like the environment used here
-
-
 
 
 for i in range(300):
